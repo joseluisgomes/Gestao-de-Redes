@@ -11,5 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: net.percederberg:mibble:2.10.1" level="project" />
+    <orderEntry type="library" name="Maven: net.percederberg:mibble-mibs:2.10.1" level="project" />
   </component>
 </module>
