@@ -1,8 +1,7 @@
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 class Agent { // Snmp Server
 
@@ -13,23 +12,22 @@ class Agent { // Snmp Server
         System.out.println("Connection established");
 
         // To read data from the manager
-        final BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        final List<String> snmpCommands = new ArrayList<>();
-
+        final BufferedReader serverReader = new BufferedReader(new InputStreamReader(s.getInputStream()));
         while (true) {
             String snmpCommand;
-            while ((snmpCommand = br.readLine()) != null) {
-                snmpCommands.add(snmpCommand);
-                System.out.println(snmpCommand);
+            while (!(snmpCommand = serverReader.readLine()).equals("exit")) {
+                final Process process = Runtime.getRuntime().exec(snmpCommand);
+                final BufferedReader processReader = // Read the command's output
+                        new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+                String snmpCommandOutput;
+                while ((snmpCommandOutput = processReader.readLine()) != null)
+                    System.out.println(snmpCommandOutput);
+                processReader.close();
             }
 
-            final String[] commands = Arrays // SnmpCommands list parsed to an array
-                    .copyOf(snmpCommands.toArray(), snmpCommands.size(),String[].class);
-
-            // Runtime.getRuntime().exec(commands); TODO: For the virtual machine
-
             // close connection
-            br.close();
+            serverReader.close();
             ss.close();
             s.close();
 
