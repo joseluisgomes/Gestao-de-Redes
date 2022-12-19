@@ -1,29 +1,21 @@
-// Client2 class that
-// sends data and receives also
-
 import java.io.*;
 import java.net.*;
 
 class Manager { // Snmp Client
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
+        final Socket s = new Socket("localhost", 5000); // Create client socket
 
-        // Create client socket
-        Socket s = new Socket("localhost", 5000);
+        final DataOutputStream send = new DataOutputStream(s.getOutputStream()); // to send data to the server
+        final BufferedReader readInput = new BufferedReader(new InputStreamReader(System.in)); // to read data from the keyboard
 
-        // to send data to the server
-        DataOutputStream send = new DataOutputStream(s.getOutputStream());
+        String userInput = "";
+        while (!userInput.equals("exit")) {
+            System.out.print("Command: ");
+            userInput = readInput.readLine();
 
-        // to read data from the keyboard
-        BufferedReader readInput = new BufferedReader(new InputStreamReader(System.in));
-
-        String string, string1;
-
-        // repeat as long as exit
-        // is not typed at client
-        while (!(string = readInput.readLine()).equals("exit"))
-            // send to the server
-            send.writeBytes(string + "\n");
+            send.writeBytes(userInput + "\n"); // send to the server
+        }
 
         // close connection.
         send.close();
