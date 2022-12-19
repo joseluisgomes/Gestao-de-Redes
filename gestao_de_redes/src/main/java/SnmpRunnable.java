@@ -17,8 +17,10 @@ public class SnmpRunnable implements Runnable {
 
     @Override
     public void run() {
-        try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+        try (PrintWriter out =
+                     new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in =
+                     new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
             String managerInput;
 
@@ -30,6 +32,7 @@ public class SnmpRunnable implements Runnable {
                 the manager sent to the agent.
              */
             snmpCommands.forEach(out::println);
+            socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
