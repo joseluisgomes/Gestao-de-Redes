@@ -3,6 +3,7 @@ import java.net.*;
 
 class Manager { // Snmp Client
 
+
     public static void main(String[] args) throws Exception {
         final Socket s = new Socket("localhost", 5000); // Create client socket
 
