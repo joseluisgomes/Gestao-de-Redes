@@ -145,7 +145,7 @@ public class OperEntry {
         return ttl;
     }
 
-    public void setTtl(Integer ttl) {
+    public void setTTL(Integer ttl) {
         this.ttl = ttl;
     }
 

@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.TreeMap;
 
 class SnmpManager { // Snmp Client
-    private Snmp snmp = null;
-
     public OID[] operTableOID = { new OID(new int[] {1,3,6,1,4,1,1,1,1}), }; // operTable's OID
     public OID[] operEntryOID = { new OID(new int[] {1,3,6,1,4,1,1,1,1,1}), }; // idOper's OID
     OID[] typeOperOID = { new OID(new int[] {1,3,6,1,4,1,1,1,1,2}), }; // typeOper's OID
@@ -37,50 +35,47 @@ class SnmpManager { // Snmp Client
     OID[] status = { new OID(new int[] {1,3,6,1,4,1,1,1,1,12}), }; // status's OID
 
 
-    public List<VariableBinding[]> getBulk(OID[] OIDsProcesses) throws IOException { //GetBULK
+    public List<VariableBinding[]> snmpGetBulk(OID[] OIDsProcesses) throws IOException { // snmpgetbulk
         DefaultPDUFactory pduFactory = new DefaultPDUFactory(PDU.GETBULK);
+
         Snmp snmp = new Snmp(new DefaultUdpTransportMapping());
         snmp.listen(); // open port to receive response
+
         TreeUtils tree = new TreeUtils(snmp, pduFactory);
         tree.setMaxRepetitions(100); // 100 is the max
 
         List<TreeEvent> listWalk = tree.walk(getTargetForWrite(), OIDsProcesses);
-        List<VariableBinding[]> vbs = new ArrayList<>(listWalk.size());
+        List<VariableBinding[]> variableBindings = new ArrayList<>(listWalk.size());
 
-        int errorStatus = PDU.noError;
+        int errorStatus;
         for (TreeEvent treeEvent : listWalk) {
             errorStatus = treeEvent.getStatus();
             if (errorStatus == PDU.noError)  // check for errors
-                vbs.add(treeEvent.getVariableBindings()); // copying the results to a data collection that can be manipulated later
+                variableBindings.add(treeEvent.getVariableBindings()); // copying the results to a data collection that can be manipulated later
             else
                 System.out.println("error: " +errorStatus +"\n");
         }
         snmp.close();
-        return vbs;
-
+        return variableBindings;
     }
 
-    public TreeMap<Integer,String> vbToArray (List<VariableBinding[]> vbs) { //transforma o list de variableBinding  num treemap
-
+    public TreeMap<Integer,String> variableBindingsToTreeMap(List<VariableBinding[]> vbs) { //transforma o list de variableBinding  num treemap
         TreeMap <Integer,String> array = new TreeMap<>();
 
-        for (VariableBinding[] vba : vbs) {
-
+        for (VariableBinding[] vba : vbs)
             for (VariableBinding vb : vba) {
                 Integer pid = vb.getOid().last();
                 array.put(pid,vb.toValueString());
             }
-
-        }
-        return  array;
+        return array;
     }
 
 
     public void searchEvent(String nome) throws IOException {
-        TreeMap<Integer,String> nomes = new TreeMap<Integer, String>(vbToArray(getBulk(typeOperOID)));
-        TreeMap<Integer,String> duracao = new TreeMap<Integer, String>(vbToArray(getBulk(operArg1OID)));
-        TreeMap<Integer,String> deltaT = new TreeMap<Integer, String>(vbToArray(getBulk(operArg2OID)));
-        TreeMap<Integer,String> dataLimite = new TreeMap<Integer, String>(vbToArray(getBulk(idSourceOID)));
+        TreeMap<Integer,String> nomes = new TreeMap<>(variableBindingsToTreeMap(snmpGetBulk(typeOperOID)));
+        TreeMap<Integer,String> duracao = new TreeMap<>(variableBindingsToTreeMap(snmpGetBulk(operArg1OID)));
+        TreeMap<Integer,String> deltaT = new TreeMap<>(variableBindingsToTreeMap(snmpGetBulk(operArg2OID)));
+        TreeMap<Integer,String> dataLimite = new TreeMap<>(variableBindingsToTreeMap(snmpGetBulk(idSourceOID)));
 
         int key;
 
@@ -103,6 +98,7 @@ class SnmpManager { // Snmp Client
 
     private Target getTargetForWrite() {
         CommunityTarget target = new CommunityTarget();
+
         target.setCommunity(new OctetString("public")); //verificar se tem de ser public ou private
         target.setVersion(SnmpConstants.version2c);
         target.setAddress(GenericAddress.parse("127.0.0.1/3003"));
