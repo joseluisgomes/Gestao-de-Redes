@@ -14,18 +14,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>mibble</id>
-            <url>https://www.mibble.org/maven</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
-            <groupId>net.percederberg</groupId>
-            <artifactId>mibble</artifactId>
-            <version>2.10.1</version>
+            <groupId>org.snmp4j</groupId>
+            <artifactId>snmp4j</artifactId>
+            <version>3.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
         </dependency>
     </dependencies>
 </project>
