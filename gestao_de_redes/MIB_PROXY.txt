@@ -22,18 +22,13 @@ mibProxyRegMIB MODULE-IDENTITY
 	::= { enterprises 1 }
 
 
--- Scalars and Tables
---
-
-mibProxyObjects OBJECT IDENTIFIER  -- 1.3.6.1.4.1.1.1 ::= { mibProxyRegMIB 1 }
-
 operTable OBJECT-TYPE
 	SYNTAX  SEQUENCE OF OperEntry
 	MAX-ACCESS not-accessible
 	STATUS  current
 	DESCRIPTION "Tabela das operacoes SNMP"
-	-- 1.3.6.1.4.1.1.1.1
-	::= { mibProxyObjects 1 }
+	-- 1.3.6.1.4.1.1.1
+	::= { mibProxyRegMIB 1 }
 
 
 operEntry OBJECT-TYPE
@@ -43,7 +38,8 @@ operEntry OBJECT-TYPE
 	DESCRIPTION
 		"Entrada/linha da tabela com informacao relativa a respetiva operacao."
 	INDEX { idOper }
-	::= { operTable 1 } -- 1.3.6.4.1.1.1.1
+    -- 1.3.6.1.4.1.1.1.1
+	::= { operTable 1 } 
 
 
 OperEntry ::= SEQUENCE {
@@ -69,7 +65,7 @@ idOper OBJECT-TYPE
 	DESCRIPTION
 		"Identificador da operação recebida pelo agente proxy (número aleatório e unívoco, gerado pelo gestor e verificado pelo proxy); 
 		Este objeto serve de chave da tabela."
-	-- 1.3.6.1.4.1.1.1.1.1.1
+	-- 1.3.6.1.4.1.1.1.1.1
 	::= { operEntry 1 }
 
 
@@ -80,7 +76,7 @@ typeOper OBJECT-TYPE
 	DESCRIPTION
 		"Tipo de operação SNMP (get, getnext): a identificação pode ser feita através
 		dum número inteiro/tag."
-	-- 1.3.6.1.4.1.1.1.1.1.2
+	-- 1.3.6.1.4.1.1.1.1.2
 	::= { operEntry 2 }
 
 
@@ -90,7 +86,7 @@ operArg1 OBJECT-TYPE
 	STATUS  current
 	DESCRIPTION
 		"1º argumento de uma determinada operação a ser processada."
-	-- 1.3.6.1.4.1.1.1.1.1.3
+	-- 1.3.6.1.4.1.1.1.1.3
 	::= { operEntry 3 }
 
 
@@ -100,7 +96,7 @@ operArg2 OBJECT-TYPE
 	STATUS  current
 	DESCRIPTION
 		"2º argumento de uma determinada operação a ser processada"
-	-- 1.3.6.1.4.1.1.1.1.1.4
+	-- 1.3.6.1.4.1.1.1.1.4
 	::= { operEntry 4 }
 
 
@@ -110,7 +106,7 @@ idSource OBJECT-TYPE
 	STATUS  current
 	DESCRIPTION
 		"Identificador da fonte do pedido"
-	-- 1.3.6.1.4.1.1.1.1.1.5
+	-- 1.3.6.1.4.1.1.1.1.5
 	::= { operEntry 5 }
 
 
@@ -121,7 +117,7 @@ idDestination OBJECT-TYPE
 	DESCRIPTION
 		"Identificador do destino onde a operação será executada (um
 		alias/nome que identifica um gestor SNMPv2c)"
-	-- 1.3.6.1.4.1.1.1.1.1.6
+	-- 1.3.6.1.4.1.1.1.1.6
 	::= { operEntry 6 }
 
 
@@ -132,7 +128,7 @@ oidArg OBJECT-TYPE
 	DESCRIPTION
 		"OID do objeto da MIB que é argumento da operação a ser executada no agente
 		SNMPv2c remoto"
-	-- 1.3.6.1.4.1.1.1.1.1.7
+	-- 1.3.6.1.4.1.1.1.1.7
 	::= { operEntry 7 }
 
 
@@ -143,7 +139,7 @@ valueArg OBJECT-TYPE
 	DESCRIPTION
 		"Valor do objeto referido por oidArg que é o resultado recebido no agente
 		proxy vindo do agente SNMPv2c remoto."
-	-- 1.3.6.1.4.1.1.1.1.1.8
+	-- 1.3.6.1.4.1.1.1.1.8
 	::= { operEntry 8 }
 
 
@@ -154,7 +150,7 @@ typeArg OBJECT-TYPE
 	DESCRIPTION
 		"Tipo de dados do valueArg (INTEGER, STRING, etc.); a identificação pode
 		ser feita através dum número inteiro/tag."
-	-- 1.3.6.1.4.1.1.1.1.1.9
+	-- 1.3.6.1.4.1.1.1.1.9
 	::= { operEntry 9 }
 
 
@@ -167,7 +163,7 @@ sizeArg OBJECT-TYPE
 		devolvido pelo agente SNMPv2c remoto, sizeArg deve ser igual a zero; quando o agente
 		proxy recebe a resposta do agente SNMPv2c remoto grava o valor da instância do objeto
 		em valueArg e coloca sizeArg com o tamanho desse valor."
-	-- 1.3.6.1.4.1.1.1.1.1.10
+	-- 1.3.6.1.4.1.1.1.1.10
 	::= { operEntry 10 }
 
 
@@ -178,7 +174,7 @@ ttl OBJECT-TYPE
 	DESCRIPTION
 		"Tempo de vida restante da entrada na tabela; quando este valor atingir zero a entrada
 		é retirada e o gestor não poderá aceder aos seus valores."
-	-- 1.3.6.1.4.1.1.1.1.1.11
+	-- 1.3.6.1.4.1.1.1.1.11
 	::= { operEntry 11 }
 
 
@@ -188,16 +184,9 @@ status OBJECT-TYPE
 	STATUS  current
 	DESCRIPTION
 		""
-	-- 1.3.6.1.4.1.1.1.1.1.12
+	-- 1.3.6.1.4.1.1.1.1.12
 	::= { operEntry 12 }
 
-
--- Notification Types
---
-
-mibProxyEvents OBJECT IDENTIFIER 
-	-- 1.3.6.1.4.1.1.2
-	::= { mibProxyRegMIB 2 }
 
 -- Conformance
 --
@@ -221,7 +210,7 @@ mibProxyCompliances OBJECT IDENTIFIER
 	::= { mibProxyConf 2 }
 
 
-mibProxy NOTIFICATION-TYPE
+mibProxyNotification NOTIFICATION-TYPE
 	OBJECTS {
 		idOper,
 		typeOper,
@@ -261,40 +250,12 @@ mibProxyBasicGroup OBJECT-GROUP
 	-- 1.3.6.1.4.1.1.3.1.1
 	::= { mibProxyGroups 1 }
 
-mibProxyBasic OBJECT-GROUP
-	OBJECTS {
-		idOper,
-		typeOper,
-		operArg1,
-		operArg2,
-		idSource,
-		idDestination,
-		oidArg,
-		valueArg,
-		typeArg,
-		sizeArg,
-		ttl,
-		status }
-	STATUS  current
-	DESCRIPTION
-		""
-	-- 1.3.6.1.4.1.1.3.1.3
-	::= { mibProxyGroups 3 }
-
 mibProxyBasicEvents NOTIFICATION-GROUP
 	NOTIFICATIONS {
-		mibProxy }
+		operTable }
 	STATUS  current
 	DESCRIPTION "Basic notifications."
 	-- 1.3.6.1.4.1.1.3.1.2
 	::= { mibProxyGroups 2 }
-
-mibProxyBasic0 NOTIFICATION-GROUP
-	NOTIFICATIONS {
-		mibProxy }
-	STATUS  current
-	DESCRIPTION ""
-	-- 1.3.6.1.4.1.1.3.1.4
-	::= { mibProxyGroups 4 }
 
 END

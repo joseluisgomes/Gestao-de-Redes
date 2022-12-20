@@ -1,4 +1,4 @@
-package mib;
+package manager;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MIBProxy {
+public class OperTable {
     private List<OperEntry> operTable;
-    private static final String MIBPATH = "/home/luis/GitHub/UM/Gestao-de-Redes/gestao_de_redes/";
+    private static final String MIB_PATH = "/home/luis/GitHub/UM/Gestao-de-Redes/gestao_de_redes/";
 
-    public MIBProxy() {
+    public OperTable() {
         this.operTable = new ArrayList<>();
     }
 
-    public MIBProxy(List<OperEntry> operEntries) {
+    public OperTable(List<OperEntry> operEntries) {
         this.operTable = operEntries;
     }
 
@@ -48,18 +48,18 @@ public class MIBProxy {
 
     public void saveOperTable(String mib) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        File json = new File(MIBPATH + mib);
-        MIBProxy mibProxy = new MIBProxy(operTable);
+        File json = new File(MIB_PATH + mib);
 
-        mapper.defaultPrettyPrintingWriter().writeValue(json,mibProxy);
+        OperTable operTable = new OperTable(this.operTable);
+        mapper.defaultPrettyPrintingWriter().writeValue(json, operTable);
     }
 
     public void loadOperTable(String mibProxyJson) throws Exception{
         ObjectMapper mapper = new ObjectMapper();
-        File json = new File(MIBPATH + mibProxyJson) ;
+        File json = new File(MIB_PATH + mibProxyJson) ;
 
-        MIBProxy mibProxy = mapper.readValue(json, MIBProxy.class);
-        operTable = new ArrayList<OperEntry>(mibProxy.getOperTable());
+        OperTable operTable = mapper.readValue(json, OperTable.class);
+        this.operTable = new ArrayList<>(operTable.getOperTable());
     }
 
     public static void searchEntryByOperType(Integer entryOperType, ArrayList<OperEntry> operTable){

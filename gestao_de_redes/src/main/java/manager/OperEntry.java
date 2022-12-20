@@ -1,4 +1,4 @@
-package mib;
+package manager;
 
 import java.util.Objects;
 
@@ -197,7 +197,7 @@ public class OperEntry {
 
     @Override
     public String toString() {
-        return "OperEntry{" +
+        return "manager.OperEntry{" +
                 "idOper=" + idOper +
                 ", typeOper=" + typeOper +
                 ", operArg1=" + operArg1 +
