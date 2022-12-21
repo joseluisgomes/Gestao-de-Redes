@@ -1,27 +1,33 @@
 package mib;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class MIBProxy {
-    // Key = OID & Value = OBJECT-TYPE
-    private Map<String, List<OperEntry>> operTable = new HashMap<>();
+    private final String operTableOID = "1.3.6.1.4.1.1.1.1";
+    private List<OperEntry> operTable = new ArrayList<>();
 
-    public Map<String, List<OperEntry>> getOperTable() {
+    public String getOperTableOID() {
+        return operTableOID;
+    }
+
+    public List<OperEntry> getOperTable() {
         return operTable;
     }
 
-    public void setOperTable(Map<String, List<OperEntry>> operTable) {
+    public void setOperTable(List<OperEntry> operTable) {
         this.operTable = Objects.requireNonNull(operTable);
+    }
+
+    public void addEntryToOperTable(OperEntry operEntry) {
+        if (operTable.contains(Objects.requireNonNull(operEntry))) return;
+        operTable.add(Objects.requireNonNull(operEntry));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof MIBProxy mibProxy))
+        if ((!(o instanceof MIBProxy mibProxy)))
             return false;
         return operTable.equals(mibProxy.operTable);
     }
@@ -33,8 +39,9 @@ public class MIBProxy {
 
     @Override
     public String toString() {
-        return "mib.MIBProxy{" +
-                "operTable=" + operTable +
+        return "MIBProxy{" +
+                "operTableOID='" + operTableOID + '\'' +
+                ", operTable=" + operTable +
                 '}';
     }
 }
