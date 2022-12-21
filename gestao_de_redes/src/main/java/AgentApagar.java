@@ -31,8 +31,7 @@ public class AgentApagar {
             int counter = 0;
 
 
-            final ServerSocket server = new ServerSocket(500);
-            final Socket request = server.accept();
+            final ServerSocket server = new ServerSocket(5000);
             System.out.println("Listening for connections on port 8080...");
 
 
