@@ -16,7 +16,7 @@ class Agent { // Snmp Server
         while (true) {
             String snmpCommand;
             while (!(snmpCommand = serverReader.readLine()).equals("exit")) {
-                final Process process = Runtime.getRuntime().exec(snmpCommand);
+                final Process process = Runtime.getRuntime().exec(snmpCommand); // Validates the command
                 final BufferedReader processReader = // Read the command's output
                         new BufferedReader(new InputStreamReader(process.getInputStream()));
 

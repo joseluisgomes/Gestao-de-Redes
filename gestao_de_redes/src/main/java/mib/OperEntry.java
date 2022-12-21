@@ -1,12 +1,11 @@
+package mib;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class MIBProxy {
-    private Map<String, List<MibEntry>> operTable = new HashMap<>();
-}
-
-class MibEntry {
+class OperEntry {
+    // Key = OID & Value = OBJECT-TYPE
     private Map<String,Integer> idOper = new HashMap<>();
     private Map<String,Integer> typeOper = new HashMap<>();
     private Map<String,Integer> operArg1 = new HashMap<>();
@@ -20,16 +19,14 @@ class MibEntry {
     private Map<String,Integer> ttl = new HashMap<>();
     private Map<String,Integer> status = new HashMap<>();
 
-    public MibEntry() {
-
-    }
+    public OperEntry() { }
 
     public Map<String, Integer> getIdOper() {
         return idOper;
     }
 
     public void setIdOper(Map<String, Integer> idOper) {
-        this.idOper = idOper;
+        this.idOper = Objects.requireNonNull(idOper);
     }
 
     public Map<String, Integer> getTypeOper() {
@@ -37,7 +34,7 @@ class MibEntry {
     }
 
     public void setTypeOper(Map<String, Integer> typeOper) {
-        this.typeOper = typeOper;
+        this.typeOper = Objects.requireNonNull(typeOper);
     }
 
     public Map<String, Integer> getOperArg1() {
@@ -45,7 +42,7 @@ class MibEntry {
     }
 
     public void setOperArg1(Map<String, Integer> operArg1) {
-        this.operArg1 = operArg1;
+        this.operArg1 = Objects.requireNonNull(operArg1);
     }
 
     public Map<String, Integer> getOperArg2() {
@@ -53,7 +50,7 @@ class MibEntry {
     }
 
     public void setOperArg2(Map<String, Integer> operArg2) {
-        this.operArg2 = operArg2;
+        this.operArg2 = Objects.requireNonNull(operArg2);
     }
 
     public Map<String, String> getIdSource() {
@@ -61,7 +58,7 @@ class MibEntry {
     }
 
     public void setIdSource(Map<String, String> idSource) {
-        this.idSource = idSource;
+        this.idSource = Objects.requireNonNull(idSource);
     }
 
     public Map<String, String> getIdDestination() {
@@ -69,7 +66,7 @@ class MibEntry {
     }
 
     public void setIdDestination(Map<String, String> idDestination) {
-        this.idDestination = idDestination;
+        this.idDestination = Objects.requireNonNull(idDestination);
     }
 
     public Map<String, String> getOidArg() {
@@ -77,7 +74,7 @@ class MibEntry {
     }
 
     public void setOidArg(Map<String, String> oidArg) {
-        this.oidArg = oidArg;
+        this.oidArg = Objects.requireNonNull(oidArg);
     }
 
     public Map<String, Object> getValueArg() {
@@ -85,7 +82,7 @@ class MibEntry {
     }
 
     public void setValueArg(Map<String, Object> valueArg) {
-        this.valueArg = valueArg;
+        this.valueArg = Objects.requireNonNull(valueArg);
     }
 
     public Map<String, Integer> getTypeArg() {
@@ -93,7 +90,7 @@ class MibEntry {
     }
 
     public void setTypeArg(Map<String, Integer> typeArg) {
-        this.typeArg = typeArg;
+        this.typeArg = Objects.requireNonNull(typeArg);
     }
 
     public Map<String, Integer> getSizeArg() {
@@ -101,15 +98,15 @@ class MibEntry {
     }
 
     public void setSizeArg(Map<String, Integer> sizeArg) {
-        this.sizeArg = sizeArg;
+        this.sizeArg = Objects.requireNonNull(sizeArg);
     }
 
-    public Map<String, Integer> getTtl() {
+    public Map<String, Integer> getTTL() {
         return ttl;
     }
 
     public void setTtl(Map<String, Integer> ttl) {
-        this.ttl = ttl;
+        this.ttl = Objects.requireNonNull(ttl);
     }
 
     public Map<String, Integer> getStatus() {
@@ -117,26 +114,27 @@ class MibEntry {
     }
 
     public void setStatus(Map<String, Integer> status) {
-        this.status = status;
+        this.status = Objects.requireNonNull(status);
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof MibEntry mibEntry))
+        if (!(o instanceof OperEntry operEntry))
             return false;
-        return idOper.equals(mibEntry.idOper);
+        return idOper.equals(operEntry.idOper);
     }
 
     @Override
     public int hashCode() {
-        return idOper.hashCode();
+        return idSource.hashCode();
     }
 
     @Override
     public String toString() {
-        return "MibEntry{" +
+        return "MIBEntry{" +
                 "idOper=" + idOper +
                 ", typeOper=" + typeOper +
                 ", operArg1=" + operArg1 +
