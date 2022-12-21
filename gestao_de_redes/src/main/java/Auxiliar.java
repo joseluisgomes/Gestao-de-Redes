@@ -1,4 +1,17 @@
 import mib.MIBProxy;
+import mib.MIBProxy;
+import mib.OperEntry;
+import snmp.SnmpMessage;
+import snmp.SnmpOID;
+import snmp.SnmpObjectType;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import mib.MIBProxy;
 import mib.OperEntry;
 import snmp.SnmpMessage;
 import snmp.SnmpOID;
@@ -11,19 +24,29 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-class Agent { // Snmp Server
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-    public static void main(String[] args) throws Exception {
-        final MIBProxy mibProxy = new MIBProxy();
+public class Auxiliar extends Thread {
 
-        final ServerSocket server = new ServerSocket(5000);
-        final Socket request = server.accept();
-        System.out.println("Connection established");
+    int clientNo;
+    Socket serverClient;
+    int x = 0;
 
-        final BufferedReader serverReader =  // To read data from the manager
-                new BufferedReader(new InputStreamReader(request.getInputStream()));
+    Auxiliar(Socket inSocket, int counter) {
+        serverClient = inSocket;
+        clientNo = counter;
+    }
 
-        while (true) {
+    public void run() {
+        try {
+            final MIBProxy mibProxy = new MIBProxy();
+            final BufferedReader serverReader = new BufferedReader(new InputStreamReader(serverClient.getInputStream()));
+
             String snmpCommand;
             while (!(snmpCommand = serverReader.readLine()).equals("exit")) {
                 // Executes the given (by the manager) command
@@ -47,11 +70,15 @@ class Agent { // Snmp Server
 
             // close connection
             serverReader.close();
-            server.close();
-            request.close();
+
 
             System.exit(0); // terminate application
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+
     }
 
     private static OperEntry parseSnmpCommand(String snmpCommand, String snmpCommandOutput) {
@@ -61,7 +88,7 @@ class Agent { // Snmp Server
         // example: snmpget -v2c -c gr2020 localhost system.sysName.0
         return new OperEntry(
                 new SnmpObjectType(SnmpOID.idOper.getOID(), 1),
-                new SnmpObjectType(SnmpOID.typeOper.getOID(),SnmpMessage.GetRequest.getOperationType()),
+                new SnmpObjectType(SnmpOID.typeOper.getOID(), SnmpMessage.GetRequest.getOperationType()),
                 new SnmpObjectType(SnmpOID.operArg1.getOID(), "-v2c"),
                 new SnmpObjectType(SnmpOID.operArg2.getOID(), "-c gr2020"),
                 new SnmpObjectType(SnmpOID.idSource.getOID(), "localhost"),

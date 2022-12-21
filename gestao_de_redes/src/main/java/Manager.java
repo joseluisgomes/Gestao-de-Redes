@@ -5,7 +5,7 @@ class Manager { // Snmp Client
 
 
     public static void main(String[] args) throws Exception {
-        final Socket s = new Socket("localhost", 5000); // Create client socket
+        final Socket s = new Socket("localhost", 8080); // Create client socket
 
         final DataOutputStream send = new DataOutputStream(s.getOutputStream()); // to send data to the server
         final BufferedReader readInput = new BufferedReader(new InputStreamReader(System.in)); // to read data from the keyboard
