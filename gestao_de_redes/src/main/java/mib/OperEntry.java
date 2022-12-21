@@ -1,127 +1,100 @@
 package mib;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import snmp.SnmpObjectType;
 
-class OperEntry {
-    // Key = OID & Value = OBJECT-TYPE
-    private Map<String,Integer> idOper = new HashMap<>();
-    private Map<String,Integer> typeOper = new HashMap<>();
-    private Map<String,Integer> operArg1 = new HashMap<>();
-    private Map<String,Integer> operArg2 = new HashMap<>();
-    private Map<String,String> idSource = new HashMap<>();
-    private Map<String,String> idDestination = new HashMap<>();
-    private Map<String,String> oidArg = new HashMap<>();
-    private Map<String,Object> valueArg = new HashMap<>();
-    private Map<String,Integer> typeArg = new HashMap<>();
-    private Map<String,Integer> sizeArg = new HashMap<>();
-    private Map<String,Integer> ttl = new HashMap<>();
-    private Map<String,Integer> status = new HashMap<>();
+public class OperEntry {
+    private SnmpObjectType idOper = new SnmpObjectType();;
+    private SnmpObjectType typeOper = new SnmpObjectType();
+    private SnmpObjectType operArg1 = new SnmpObjectType();
+    private SnmpObjectType operArg2 = new SnmpObjectType();
+    private SnmpObjectType idSource = new SnmpObjectType();
+    private SnmpObjectType idDestination = new SnmpObjectType();
+    private SnmpObjectType oidArg = new SnmpObjectType();
+    private SnmpObjectType valueArg = new SnmpObjectType();
+    private SnmpObjectType typeArg = new SnmpObjectType();
+    private SnmpObjectType sizeArg = new SnmpObjectType();
+    private SnmpObjectType ttl = new SnmpObjectType();
+    private SnmpObjectType status = new SnmpObjectType();
 
     public OperEntry() { }
 
-    public Map<String, Integer> getIdOper() {
+    public OperEntry(SnmpObjectType idOper,
+                     SnmpObjectType typeOper,
+                     SnmpObjectType operArg1,
+                     SnmpObjectType operArg2,
+                     SnmpObjectType idSource,
+                     SnmpObjectType idDestination,
+                     SnmpObjectType oidArg,
+                     SnmpObjectType valueArg,
+                     SnmpObjectType typeArg,
+                     SnmpObjectType sizeArg,
+                     SnmpObjectType ttl,
+                     SnmpObjectType status) {
+        this.idOper = idOper;
+        this.typeOper = typeOper;
+        this.operArg1 = operArg1;
+        this.operArg2 = operArg2;
+        this.idSource = idSource;
+        this.idDestination = idDestination;
+        this.oidArg = oidArg;
+        this.valueArg = valueArg;
+        this.typeArg = typeArg;
+        this.sizeArg = sizeArg;
+        this.ttl = ttl;
+        this.status = status;
+    }
+
+    public SnmpObjectType getIdOper() {
         return idOper;
     }
 
-    public void setIdOper(Map<String, Integer> idOper) {
-        this.idOper = Objects.requireNonNull(idOper);
-    }
-
-    public Map<String, Integer> getTypeOper() {
+    public SnmpObjectType getTypeOper() {
         return typeOper;
     }
 
-    public void setTypeOper(Map<String, Integer> typeOper) {
-        this.typeOper = Objects.requireNonNull(typeOper);
-    }
-
-    public Map<String, Integer> getOperArg1() {
+    public SnmpObjectType getOperArg1() {
         return operArg1;
     }
 
-    public void setOperArg1(Map<String, Integer> operArg1) {
-        this.operArg1 = Objects.requireNonNull(operArg1);
-    }
-
-    public Map<String, Integer> getOperArg2() {
+    public SnmpObjectType getOperArg2() {
         return operArg2;
     }
 
-    public void setOperArg2(Map<String, Integer> operArg2) {
-        this.operArg2 = Objects.requireNonNull(operArg2);
-    }
-
-    public Map<String, String> getIdSource() {
+    public SnmpObjectType getIdSource() {
         return idSource;
     }
 
-    public void setIdSource(Map<String, String> idSource) {
-        this.idSource = Objects.requireNonNull(idSource);
-    }
-
-    public Map<String, String> getIdDestination() {
+    public SnmpObjectType getIdDestination() {
         return idDestination;
     }
 
-    public void setIdDestination(Map<String, String> idDestination) {
-        this.idDestination = Objects.requireNonNull(idDestination);
-    }
-
-    public Map<String, String> getOidArg() {
+    public SnmpObjectType getOidArg() {
         return oidArg;
     }
 
-    public void setOidArg(Map<String, String> oidArg) {
-        this.oidArg = Objects.requireNonNull(oidArg);
-    }
-
-    public Map<String, Object> getValueArg() {
+    public SnmpObjectType getValueArg() {
         return valueArg;
     }
 
-    public void setValueArg(Map<String, Object> valueArg) {
-        this.valueArg = Objects.requireNonNull(valueArg);
-    }
-
-    public Map<String, Integer> getTypeArg() {
+    public SnmpObjectType getTypeArg() {
         return typeArg;
     }
 
-    public void setTypeArg(Map<String, Integer> typeArg) {
-        this.typeArg = Objects.requireNonNull(typeArg);
-    }
-
-    public Map<String, Integer> getSizeArg() {
+    public SnmpObjectType getSizeArg() {
         return sizeArg;
     }
 
-    public void setSizeArg(Map<String, Integer> sizeArg) {
-        this.sizeArg = Objects.requireNonNull(sizeArg);
-    }
-
-    public Map<String, Integer> getTTL() {
+    public SnmpObjectType getTtl() {
         return ttl;
     }
 
-    public void setTtl(Map<String, Integer> ttl) {
-        this.ttl = Objects.requireNonNull(ttl);
-    }
-
-    public Map<String, Integer> getStatus() {
+    public SnmpObjectType getStatus() {
         return status;
     }
 
-    public void setStatus(Map<String, Integer> status) {
-        this.status = Objects.requireNonNull(status);
-    }
-
-
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
+        if (this == o) return true;
         if (!(o instanceof OperEntry operEntry))
             return false;
         return idOper.equals(operEntry.idOper);
@@ -129,12 +102,12 @@ class OperEntry {
 
     @Override
     public int hashCode() {
-        return idSource.hashCode();
+        return idOper.hashCode();
     }
 
     @Override
     public String toString() {
-        return "MIBEntry{" +
+        return "OperEntry{" +
                 "idOper=" + idOper +
                 ", typeOper=" + typeOper +
                 ", operArg1=" + operArg1 +

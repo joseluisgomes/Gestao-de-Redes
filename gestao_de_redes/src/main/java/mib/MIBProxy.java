@@ -1,9 +1,11 @@
 package mib;
 
+import snmp.SnmpOID;
+
 import java.util.*;
 
 public class MIBProxy {
-    private final String operTableOID = "1.3.6.1.4.1.1.1.1";
+    private final String operTableOID = SnmpOID.operTable.getOID();
     private List<OperEntry> operTable = new ArrayList<>();
 
     public String getOperTableOID() {
@@ -19,7 +21,8 @@ public class MIBProxy {
     }
 
     public void addEntryToOperTable(OperEntry operEntry) {
-        if (operTable.contains(Objects.requireNonNull(operEntry))) return;
+        if (operTable.contains(Objects.requireNonNull(operEntry)))
+            return;
         operTable.add(Objects.requireNonNull(operEntry));
     }
 
