@@ -2,7 +2,6 @@ import cryptography.CipherAES;
 import mib.MIBProxy;
 import mib.OperEntry;
 import snmp.SnmpMessage;
-import snmp.SnmpOID;
 import snmp.SnmpObjectType;
 
 import java.io.BufferedReader;
@@ -11,8 +10,12 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Objects;
+
+import static cryptography.CipherAES.encrypt;
+import static java.time.LocalTime.now;
+import static snmp.SnmpMessage.*;
+import static snmp.SnmpOID.*;
 
 class Agent { // Snmp Server
     private static final int PORT = 5000;
@@ -51,7 +54,7 @@ class Agent { // Snmp Server
                 processReader.close();
 
                 // Update MIB Proxy
-                mibProxy.addEntryToOperTable(parseSnmpCommand(request, output.toString()));
+                mibProxy.addEntryToOperTable(parseSnmpCommand(request, output.toString(), 0));
                 System.out.println(mibProxy);
             } else {
                 // close connection
@@ -64,24 +67,93 @@ class Agent { // Snmp Server
         }
     }
 
-    private static OperEntry parseSnmpCommand(String snmpCommand, String snmpCommandOutput) {
+    private static OperEntry parseSnmpCommand(String snmpCommand,
+                                              String snmpCommandOutput,
+                                              int counter) throws Exception {
         final String[] snmpCommandSplitted = Objects.requireNonNull(snmpCommand)
                 .split(" ");
 
-        // example: snmpget -v2c -c gr2020 localhost system.sysName.0
-        return new OperEntry(
-                new SnmpObjectType(SnmpOID.idOper.getOID(), 1),
-                new SnmpObjectType(SnmpOID.typeOper.getOID(),SnmpMessage.GetRequest.getOperationType()),
-                new SnmpObjectType(SnmpOID.operArg1.getOID(), "-v2c"),
-                new SnmpObjectType(SnmpOID.operArg2.getOID(), "-c gr2020"),
-                new SnmpObjectType(SnmpOID.idSource.getOID(), "localhost"),
-                new SnmpObjectType(SnmpOID.idDestination.getOID(), "system.sysName.0"),
-                new SnmpObjectType(SnmpOID.oidArg.getOID(), SnmpOID.idDestination.getOID()),
-                new SnmpObjectType(SnmpOID.valueArg.getOID(), snmpCommandOutput),
-                new SnmpObjectType(SnmpOID.typeArg.getOID(), SnmpObjectType.class),
-                new SnmpObjectType(SnmpOID.sizeArg.getOID(), 32),
-                new SnmpObjectType(SnmpOID.ttl.getOID(), LocalDateTime.now()),
-                new SnmpObjectType(SnmpOID.status.getOID(), "OK")
-        );
+        // Determine the #Operations
+        final var lastIndexOf = snmpCommand.lastIndexOf('-') + 3;
+
+        final String[] arguments = snmpCommand
+                .substring(lastIndexOf)
+                .split(" ");
+
+        final String firstArgument = arguments[1];
+        StringBuilder secondArgument = new StringBuilder();
+
+        for (int i = 2; i < arguments.length; i++)
+            secondArgument.append(arguments[i]).append(" ");
+
+        // 1st string is the snmp message
+        final var snmpMessage = snmpCommandSplitted[0];
+        switch (snmpMessage) {
+            case "snmpget" -> { // GetRequest
+                return new OperEntry(
+                        new SnmpObjectType(idOper.getOID(), counter),
+                        new SnmpObjectType(typeOper.getOID(), GetRequest.getOperationType()),
+                        new SnmpObjectType(operArg1.getOID(), encrypt(firstArgument)),
+                        new SnmpObjectType(operArg2.getOID(), encrypt(secondArgument.toString())),
+                        new SnmpObjectType(idSource.getOID(), firstArgument),
+                        new SnmpObjectType(idDestination.getOID(), secondArgument.toString()),
+                        new SnmpObjectType(oidArg.getOID(), idDestination.getOID()),
+                        new SnmpObjectType(valueArg.getOID(), snmpCommandOutput),
+                        new SnmpObjectType(typeArg.getOID(), String.class),
+                        new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
+                        new SnmpObjectType(ttl.getOID(), now()),
+                        new SnmpObjectType(status.getOID(), 400)
+                );
+            }
+            case "snmpgetnext" -> { // GetNextRequest
+                return new OperEntry(
+                        new SnmpObjectType(idOper.getOID(), counter),
+                        new SnmpObjectType(typeOper.getOID(), GetNextRequest.getOperationType()),
+                        new SnmpObjectType(operArg1.getOID(), encrypt(firstArgument)),
+                        new SnmpObjectType(operArg2.getOID(), encrypt(secondArgument.toString())),
+                        new SnmpObjectType(idSource.getOID(), firstArgument),
+                        new SnmpObjectType(idDestination.getOID(), secondArgument.toString()),
+                        new SnmpObjectType(oidArg.getOID(), idDestination.getOID()),
+                        new SnmpObjectType(valueArg.getOID(), snmpCommandOutput),
+                        new SnmpObjectType(typeArg.getOID(), String.class),
+                        new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
+                        new SnmpObjectType(ttl.getOID(), LocalDateTime.now()),
+                        new SnmpObjectType(status.getOID(), 400)
+                );
+            }
+            case "snmpbulkget" -> { // GetBulkRequest
+                return new OperEntry(
+                        new SnmpObjectType(idOper.getOID(), counter),
+                        new SnmpObjectType(typeOper.getOID(), GetBulkRequest.getOperationType()),
+                        new SnmpObjectType(operArg1.getOID(), encrypt(firstArgument)),
+                        new SnmpObjectType(operArg2.getOID(), encrypt(secondArgument.toString())),
+                        new SnmpObjectType(idSource.getOID(), firstArgument),
+                        new SnmpObjectType(idDestination.getOID(), secondArgument.toString()),
+                        new SnmpObjectType(oidArg.getOID(), idDestination.getOID()),
+                        new SnmpObjectType(valueArg.getOID(), snmpCommandOutput),
+                        new SnmpObjectType(typeArg.getOID(), String.class),
+                        new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
+                        new SnmpObjectType(ttl.getOID(), LocalDateTime.now()),
+                        new SnmpObjectType(status.getOID(), 400)
+                );
+            }
+            case "snmpset" -> { // SetRequest
+                return new OperEntry(
+                        new SnmpObjectType(idOper.getOID(), counter),
+                        new SnmpObjectType(typeOper.getOID(), SetRequest.getOperationType()),
+                        new SnmpObjectType(operArg1.getOID(), encrypt(firstArgument)),
+                        new SnmpObjectType(operArg2.getOID(), encrypt(secondArgument.toString())),
+                        new SnmpObjectType(idSource.getOID(), firstArgument),
+                        new SnmpObjectType(idDestination.getOID(), secondArgument.toString()),
+                        new SnmpObjectType(oidArg.getOID(), idDestination.getOID()),
+                        new SnmpObjectType(valueArg.getOID(), snmpCommandOutput),
+                        new SnmpObjectType(typeArg.getOID(), String.class),
+                        new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
+                        new SnmpObjectType(ttl.getOID(), LocalDateTime.now()),
+                        new SnmpObjectType(status.getOID(), 400)
+                );
+            }
+            default -> { return null; }
+        }
     }
 }
