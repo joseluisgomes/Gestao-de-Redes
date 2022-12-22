@@ -1,9 +1,11 @@
-import java.io.*;
-import java.net.*;
+import cryptography.CipherAES;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.Socket;
 
 class Manager { // Snmp Client
-
-
     public static void main(String[] args) throws Exception {
         final Socket s = new Socket("localhost", 5000); // Create client socket
 
@@ -15,7 +17,12 @@ class Manager { // Snmp Client
             System.out.print("Command: ");
             userInput = readInput.readLine();
 
-            send.writeBytes(userInput + "\n"); // send to the server
+            final byte[] request = CipherAES.encrypt(userInput);
+
+            // Cryptogram sent = text's size + textEncrypted
+            send.writeInt(request.length);
+            send.write(request); // Send the request to Agent Proxy
+            send.flush();
         }
 
         // close connection.

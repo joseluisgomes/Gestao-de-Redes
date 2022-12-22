@@ -1,3 +1,4 @@
+import cryptography.CipherAES;
 import mib.MIBProxy;
 import mib.OperEntry;
 import snmp.SnmpMessage;
@@ -5,6 +6,7 @@ import snmp.SnmpOID;
 import snmp.SnmpObjectType;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,17 +19,22 @@ class Agent { // Snmp Server
         final MIBProxy mibProxy = new MIBProxy();
 
         final ServerSocket server = new ServerSocket(5000);
-        final Socket request = server.accept();
+        final Socket requestSocket = server.accept();
         System.out.println("Connection established");
 
-        final BufferedReader serverReader =  // To read data from the manager
-                new BufferedReader(new InputStreamReader(request.getInputStream()));
+        final DataInputStream reqSocketInputStream =  // Request Socket's input stream
+                new DataInputStream(requestSocket.getInputStream());
 
         while (true) {
-            String snmpCommand;
-            while (!(snmpCommand = serverReader.readLine()).equals("exit")) {
-                // Executes the given (by the manager) command
-                final Process process = Runtime.getRuntime().exec(snmpCommand);
+            final int requestLength = reqSocketInputStream.readInt();
+            final byte[] encRequest = new byte[requestLength]; // Encrypted Request
+
+            while (reqSocketInputStream.read(encRequest) != 0) {
+                // Decrypt the request
+                final String request = CipherAES.decrypt(encRequest);
+
+                // Perform the request
+                final Process process = Runtime.getRuntime().exec(request);
                 final BufferedReader processReader = // Read the command's output
                         new BufferedReader(new InputStreamReader(process.getInputStream()));
 
@@ -41,14 +48,14 @@ class Agent { // Snmp Server
                 processReader.close();
 
                 // Update MIB Proxy
-                mibProxy.addEntryToOperTable(parseSnmpCommand(snmpCommand, output.toString()));
+                mibProxy.addEntryToOperTable(parseSnmpCommand(request, output.toString()));
                 System.out.println(mibProxy);
             }
 
             // close connection
-            serverReader.close();
+            reqSocketInputStream.close();
             server.close();
-            request.close();
+            requestSocket.close();
 
             System.exit(0); // terminate application
         }
