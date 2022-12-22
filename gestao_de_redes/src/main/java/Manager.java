@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 class Manager { // Snmp Client
+    private static final int PORT = 5000;
+    private static final String HOST = "localhost";
+
     public static void main(String[] args) throws Exception {
-        final Socket s = new Socket("localhost", 5000); // Create client socket
+        final Socket s = new Socket(HOST, PORT); // Create client socket
 
         final DataOutputStream send = new DataOutputStream(s.getOutputStream()); // to send data to the server
         final BufferedReader readInput = new BufferedReader(new InputStreamReader(System.in)); // to read data from the keyboard

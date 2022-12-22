@@ -11,14 +11,16 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 class Agent { // Snmp Server
+    private static final int PORT = 5000;
 
     public static void main(String[] args) throws Exception {
         final MIBProxy mibProxy = new MIBProxy();
 
-        final ServerSocket server = new ServerSocket(5000);
+        final ServerSocket server = new ServerSocket(PORT);
         final Socket requestSocket = server.accept();
         System.out.println("Connection established");
 
@@ -29,10 +31,11 @@ class Agent { // Snmp Server
             final int requestLength = reqSocketInputStream.readInt();
             final byte[] encRequest = new byte[requestLength]; // Encrypted Request
 
-            while (reqSocketInputStream.read(encRequest) != 0) {
-                // Decrypt the request
-                final String request = CipherAES.decrypt(encRequest);
+            System.out
+                    .println("Received " + reqSocketInputStream.read(encRequest) + " bytes from Manager");
 
+            final String request = CipherAES.decrypt(encRequest); // Decrypt the request
+            if (!request.equals("exit")) {
                 // Perform the request
                 final Process process = Runtime.getRuntime().exec(request);
                 final BufferedReader processReader = // Read the command's output
@@ -50,14 +53,14 @@ class Agent { // Snmp Server
                 // Update MIB Proxy
                 mibProxy.addEntryToOperTable(parseSnmpCommand(request, output.toString()));
                 System.out.println(mibProxy);
+            } else {
+                // close connection
+                reqSocketInputStream.close();
+                server.close();
+                requestSocket.close();
+
+                System.exit(0); // terminate application
             }
-
-            // close connection
-            reqSocketInputStream.close();
-            server.close();
-            requestSocket.close();
-
-            System.exit(0); // terminate application
         }
     }
 
