@@ -21,7 +21,7 @@ public class MIBProxy {
     }
 
     public void addEntryToOperTable(OperEntry operEntry) {
-        operTable.add(Objects.requireNonNull(operEntry));
+        this.operTable.add(Objects.requireNonNull(operEntry));
     }
 
     @Override

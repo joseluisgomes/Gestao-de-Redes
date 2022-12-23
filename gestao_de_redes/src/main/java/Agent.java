@@ -30,7 +30,7 @@ class Agent { // Snmp Server
         final DataInputStream reqSocketInputStream =  // Request Socket's input stream
                 new DataInputStream(requestSocket.getInputStream());
 
-        int counter = 0;
+        int operEntryID = 0;
         while (true) {
             final int requestLength = reqSocketInputStream.readInt();
             final byte[] encRequest = new byte[requestLength]; // Encrypted Request
@@ -56,11 +56,11 @@ class Agent { // Snmp Server
 
                 // Update MIB Proxy
                 mibProxy.addEntryToOperTable(
-                        parseSnmpCommand(request, output.toString(), counter)
+                        parseSnmpCommand(request, output.toString(), operEntryID)
                 );
 
-                System.out.println(mibProxy);
-                ++counter;
+                System.out.println("\n" + mibProxy);
+                ++operEntryID;
             } else {
                 // close connection
                 reqSocketInputStream.close();
@@ -75,7 +75,7 @@ class Agent { // Snmp Server
     private static OperEntry parseSnmpCommand(String snmpCommand,
                                               String snmpCommandOutput,
                                               int counter) throws Exception {
-        final String[] snmpCommandSpitted = Objects.requireNonNull(snmpCommand)
+        final String[] snmpCommandSplitted = Objects.requireNonNull(snmpCommand)
                 .split(" ");
 
         // Determine the #Operations
@@ -92,7 +92,7 @@ class Agent { // Snmp Server
             secondArgument.append(arguments[i]).append(" ");
 
         // 1st string is the snmp message
-        final var snmpMessage = snmpCommandSpitted[0];
+        final var snmpMessage = snmpCommandSplitted[0];
         switch (snmpMessage) {
             case "snmpget" -> { // GetRequest
                 return new OperEntry(
