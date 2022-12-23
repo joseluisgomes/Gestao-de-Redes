@@ -75,7 +75,7 @@ class Agent { // Snmp Server
     private static OperEntry parseSnmpCommand(String snmpCommand,
                                               String snmpCommandOutput,
                                               int counter) throws Exception {
-        final String[] snmpCommandSplitted = Objects.requireNonNull(snmpCommand)
+        final String[] snmpCommandSpitted = Objects.requireNonNull(snmpCommand)
                 .split(" ");
 
         // Determine the #Operations
@@ -92,7 +92,7 @@ class Agent { // Snmp Server
             secondArgument.append(arguments[i]).append(" ");
 
         // 1st string is the snmp message
-        final var snmpMessage = snmpCommandSplitted[0];
+        final var snmpMessage = snmpCommandSpitted[0];
         switch (snmpMessage) {
             case "snmpget" -> { // GetRequest
                 return new OperEntry(
