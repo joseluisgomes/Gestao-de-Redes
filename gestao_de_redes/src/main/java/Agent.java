@@ -30,12 +30,13 @@ class Agent { // Snmp Server
         final DataInputStream reqSocketInputStream =  // Request Socket's input stream
                 new DataInputStream(requestSocket.getInputStream());
 
+        int counter = 0;
         while (true) {
             final int requestLength = reqSocketInputStream.readInt();
             final byte[] encRequest = new byte[requestLength]; // Encrypted Request
 
             System.out
-                    .println("Received " + reqSocketInputStream.read(encRequest) + " bytes from Manager");
+                    .println("Received " + reqSocketInputStream.read(encRequest) + " bytes from Manager\n");
 
             final String request = CipherAES.decrypt(encRequest); // Decrypt the request
             if (!request.equals("exit")) {
@@ -54,8 +55,12 @@ class Agent { // Snmp Server
                 processReader.close();
 
                 // Update MIB Proxy
-                mibProxy.addEntryToOperTable(parseSnmpCommand(request, output.toString(), 0));
+                mibProxy.addEntryToOperTable(
+                        parseSnmpCommand(request, output.toString(), counter)
+                );
+
                 System.out.println(mibProxy);
+                ++counter;
             } else {
                 // close connection
                 reqSocketInputStream.close();
@@ -81,7 +86,7 @@ class Agent { // Snmp Server
                 .split(" ");
 
         final String firstArgument = arguments[1];
-        StringBuilder secondArgument = new StringBuilder();
+        final StringBuilder secondArgument = new StringBuilder();
 
         for (int i = 2; i < arguments.length; i++)
             secondArgument.append(arguments[i]).append(" ");

@@ -108,18 +108,18 @@ public class OperEntry {
     @Override
     public String toString() {
         return "OperEntry{" +
-                "idOper=" + idOper +
-                ", typeOper=" + typeOper +
-                ", operArg1=" + operArg1 +
-                ", operArg2=" + operArg2 +
-                ", idSource=" + idSource +
-                ", idDestination=" + idDestination +
-                ", oidArg=" + oidArg +
-                ", valueArg=" + valueArg +
-                ", typeArg=" + typeArg +
-                ", sizeArg=" + sizeArg +
-                ", ttl=" + ttl +
-                ", status=" + status +
+                "\nidOper=" + idOper +
+                ", \ntypeOper=" + typeOper +
+                ", \noperArg1=" + operArg1 +
+                ", \noperArg2=" + operArg2 +
+                ", \nidSource=" + idSource +
+                ", \nidDestination=" + idDestination +
+                ", \noidArg=" + oidArg +
+                ", \nvalueArg=" + valueArg +
+                ", \ntypeArg=" + typeArg +
+                ", \nsizeArg=" + sizeArg +
+                ", \nttl=" + ttl +
+                ", \nstatus=" + status +
                 '}';
     }
 }

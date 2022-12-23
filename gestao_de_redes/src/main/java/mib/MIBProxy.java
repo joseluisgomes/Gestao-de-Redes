@@ -21,8 +21,6 @@ public class MIBProxy {
     }
 
     public void addEntryToOperTable(OperEntry operEntry) {
-        if (operTable.contains(Objects.requireNonNull(operEntry)))
-            return;
         operTable.add(Objects.requireNonNull(operEntry));
     }
 
