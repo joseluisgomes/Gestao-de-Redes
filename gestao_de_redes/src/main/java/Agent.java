@@ -1,7 +1,6 @@
 import cryptography.CipherAES;
 import mib.MIBProxy;
 import mib.OperEntry;
-import snmp.SnmpMessage;
 import snmp.SnmpObjectType;
 
 import java.io.BufferedReader;
