@@ -161,6 +161,22 @@ class Agent { // Snmp Server
                         new SnmpObjectType(status.getOID(), Accepted.getCode())
                 );
             }
+            case "snmpwalk" -> { // Snmpwalk
+                return new OperEntry(
+                        new SnmpObjectType(idOper.getOID(), counter),
+                        new SnmpObjectType(typeOper.getOID(), GetNextRequest.getOperationType()),
+                        new SnmpObjectType(operArg1.getOID(), encrypt(firstArgument)),
+                        new SnmpObjectType(operArg2.getOID(), encrypt(secondArgument.toString())),
+                        new SnmpObjectType(idSource.getOID(), firstArgument),
+                        new SnmpObjectType(idDestination.getOID(), secondArgument.toString()),
+                        new SnmpObjectType(oidArg.getOID(), idDestination.getOID()),
+                        new SnmpObjectType(valueArg.getOID(), snmpCommandOutput),
+                        new SnmpObjectType(typeArg.getOID(), String.class),
+                        new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
+                        new SnmpObjectType(ttl.getOID(), now()),
+                        new SnmpObjectType(status.getOID(), OK.getCode())
+                );
+            }
             default -> { return null; }
         }
     }
