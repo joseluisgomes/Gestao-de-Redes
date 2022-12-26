@@ -1,6 +1,7 @@
 import cryptography.CipherAES;
 import mib.MIBProxy;
 import mib.OperEntry;
+import mib.StatusCodes;
 import snmp.SnmpMessage;
 import snmp.SnmpObjectType;
 
@@ -14,6 +15,8 @@ import java.util.Objects;
 
 import static cryptography.CipherAES.encrypt;
 import static java.time.LocalTime.now;
+import static mib.StatusCodes.Accepted;
+import static mib.StatusCodes.OK;
 import static snmp.SnmpMessage.*;
 import static snmp.SnmpOID.*;
 
@@ -107,7 +110,7 @@ class Agent { // Snmp Server
                         new SnmpObjectType(typeArg.getOID(), String.class),
                         new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
                         new SnmpObjectType(ttl.getOID(), now()),
-                        new SnmpObjectType(status.getOID(), 400)
+                        new SnmpObjectType(status.getOID(), OK.getCode())
                 );
             }
             case "snmpgetnext" -> { // GetNextRequest
@@ -123,7 +126,7 @@ class Agent { // Snmp Server
                         new SnmpObjectType(typeArg.getOID(), String.class),
                         new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
                         new SnmpObjectType(ttl.getOID(), LocalDateTime.now()),
-                        new SnmpObjectType(status.getOID(), 400)
+                        new SnmpObjectType(status.getOID(), OK.getCode())
                 );
             }
             case "snmpbulkget" -> { // GetBulkRequest
@@ -139,7 +142,7 @@ class Agent { // Snmp Server
                         new SnmpObjectType(typeArg.getOID(), String.class),
                         new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
                         new SnmpObjectType(ttl.getOID(), LocalDateTime.now()),
-                        new SnmpObjectType(status.getOID(), 400)
+                        new SnmpObjectType(status.getOID(), OK.getCode())
                 );
             }
             case "snmpset" -> { // SetRequest
@@ -155,7 +158,7 @@ class Agent { // Snmp Server
                         new SnmpObjectType(typeArg.getOID(), String.class),
                         new SnmpObjectType(sizeArg.getOID(), snmpCommand.getBytes().length),
                         new SnmpObjectType(ttl.getOID(), LocalDateTime.now()),
-                        new SnmpObjectType(status.getOID(), 400)
+                        new SnmpObjectType(status.getOID(), Accepted.getCode())
                 );
             }
             default -> { return null; }
