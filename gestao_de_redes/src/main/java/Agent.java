@@ -49,6 +49,8 @@ class Agent { // Snmp Server
                         new BufferedReader(new InputStreamReader(process.getInputStream()));
 
                 // Print the command's output
+                System.out.println("Request's response:");
+
                 String snmpCommandOutput;
                 StringBuilder output = new StringBuilder();
                 while ((snmpCommandOutput = processReader.readLine()) != null) {
@@ -62,7 +64,11 @@ class Agent { // Snmp Server
                         parseSnmpCommand(request, output.toString(), operEntryID)
                 );
 
-                System.out.println("\n" + mibProxy);
+                // Print the MIB's content
+                System.out.println("\n-------------------------" + " MIB's Content " + "-----------------------------");
+                System.out.println(mibProxy);
+                System.out.println("-------------------------------------------------------------------------");
+
                 ++operEntryID;
             } else {
                 // close connection
