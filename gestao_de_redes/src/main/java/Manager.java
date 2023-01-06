@@ -15,6 +15,8 @@ class Manager { // Snmp Client
         final DataOutputStream send = new DataOutputStream(s.getOutputStream()); // to send data to the server
         final BufferedReader readInput = new BufferedReader(new InputStreamReader(System.in)); // to read data from the keyboard
 
+        System.out.println("Welcome! You can perform any snmp command.");
+
         String userInput = "";
         while (!userInput.equals("exit")) {
             System.out.print("Command: ");
